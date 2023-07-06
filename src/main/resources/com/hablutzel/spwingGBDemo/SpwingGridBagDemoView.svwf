@@ -42,7 +42,7 @@ layout {
     frame: gridBagLayout (
         textField(weightx=1.0, weighty=1.0, fill=$BOTH) @A1:C1,
         filler(weightx=1.0) @A2,
-        change(gridx=2, gridy=2), // Equals @B2
+        change(gridx=1, gridy=1), // Equals @B2
         show @C2 );
 }
 
