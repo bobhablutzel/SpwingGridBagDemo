@@ -1,0 +1,48 @@
+/* Define the components of our view
+ *
+ * - A Frame that contains the elements
+ * - A label displaying text from the model
+ * - A button to change the text in the model
+ * - A button to show the current text from the model
+ */
+components {
+    frame: JFrame(title="Spwing Bound Text Field Demo", preferredSize=(400, 200));
+    textField: JTextField();
+    change: JButton(text="Change");
+    show: JButton(text="Show");
+}
+
+// Bind the label to the text field. This is on the model by
+// default but we can specify other beans instead.
+// Since we want the text to automatically update when the
+// text changes, we set a trigger event that the model
+// signals when the text changes ("evtTextFieldChanged");
+bind {
+    textField.text => "textField" ["evtTextFieldChanged"];
+}
+
+// Layout the frame using a GridBagLayout. The gridBagLayout
+// provides a powerful, flexible layout mechanism. A few things
+// to point out about Spwing support for the GridBagLayout
+//
+// -- The GridBagConstraints for the element are specified in
+//    parenthesis after the name of the element. This allows
+//    the direct setting of the weight of the item, the fill
+//    model, and the grid positioning and width.
+// -- The GridBagLayout constants (such as BOTH below) are
+//    defined as Spwing constants ($BOTH) in this case.
+// -- As an alternative to the gridx/gridy/gridwidth/gridheight
+//    specifications, a spreadsheet-like range can be specified.
+//    In this case the topleft cell is always specified and the
+//    bottomright is optionally specified. If omitted, the cell
+//    range is a single cell. This specification comes after the
+//    @ character following the GridBagLayout constraints, and
+//    will override any gridX/gridY specified.
+layout {
+    frame: gridBagLayout (
+        textField(weightx=1.0, weighty=1.0, fill=$BOTH) @A1:C1,
+        filler(weightx=1.0) @A2,
+        change(gridx=2, gridy=2), // Equals @B2
+        show @C2 );
+}
+
