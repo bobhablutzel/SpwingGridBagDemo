@@ -2,8 +2,13 @@ package com.hablutzel.spwingGBDemo;
 
 
 import com.hablutzel.spwing.annotations.Model;
-import com.hablutzel.spwing.model.BaseModel;
+import com.hablutzel.spwing.model.ModelConfiguration;
+import com.hablutzel.spwing.model.PropertyChangeModel;
 import lombok.Getter;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+
 import java.io.Serial;
 
 
@@ -20,8 +25,11 @@ import java.io.Serial;
  * can automatically detect when the model changes and
  * save the file as necessary.
  */
-@Model(extensions = {"sd2"})
-public class SpwingGridBagDemoModel extends BaseModel {
+
+@Service
+@Scope("document")
+public class SpwingGridBagDemoModel extends PropertyChangeModel
+                                    implements ModelConfiguration<SpwingGridBagDemoModel> {
 
     @Serial
     private static final long serialVersionUID = 78432508723L;
@@ -39,10 +47,10 @@ public class SpwingGridBagDemoModel extends BaseModel {
      * a document event when the text field changes. The
      * model signals this by noting that the state changed,
      * with the event to signal. This is functionality inherited
-     * from the {@link BaseModel} class. Inheriting from this
+     * from the {@link PropertyChangeModel} class. Inheriting from this
      * class is <b>not</b> required by the framework, but it
      * does provide some useful functionality such as the
-     * {@link BaseModel#stateChanged(String)}
+     * {@link PropertyChangeModel#signalChange(String, Object, Object)}
      *
      * @param textField The new value of the field
      */
@@ -50,7 +58,14 @@ public class SpwingGridBagDemoModel extends BaseModel {
         // Save the new value, and signal the change
         // This is sufficient for the bound label to be
         // updated in the view.
+        final String oldValue = this.textField;
         this.textField = textField;
-        this.stateChanged("evtTextFieldChanged");
+        this.signalChange("textField", oldValue, textField);
+    }
+
+    @Bean
+    @Scope("document")
+    public String fileExtensions() {
+        return "sd2";
     }
 }

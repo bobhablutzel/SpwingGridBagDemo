@@ -18,7 +18,7 @@ components {
 // text changes, we set a trigger event that the model
 // signals when the text changes ("evtTextFieldChanged");
 bind {
-    textField.text => "textField" ["evtTextFieldChanged"];
+    textField.text => "textField";
 }
 
 // Layout the frame using a GridBagLayout. The gridBagLayout

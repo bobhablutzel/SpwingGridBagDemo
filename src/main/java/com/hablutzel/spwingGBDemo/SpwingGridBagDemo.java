@@ -3,6 +3,9 @@ package com.hablutzel.spwingGBDemo;
 
 import com.hablutzel.spwing.Spwing;
 import com.hablutzel.spwing.annotations.Application;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 
 /**
@@ -12,7 +15,8 @@ import com.hablutzel.spwing.annotations.Application;
  * all the key objects - they will be in the same
  * package or a subpackage.
  */
-@Application(applicationName = "BTF")
+@Service
+@Scope("singleton")
 public class SpwingGridBagDemo {
 
     public static void main(String[] args) {
@@ -20,4 +24,12 @@ public class SpwingGridBagDemo {
         // Launch Spwing
         Spwing.launch(SpwingGridBagDemo.class);
     }
+
+    @Bean
+    @Scope("singleton")
+    public String launchCommand() {
+        return "cmdNew";
+    }
+
+
 }

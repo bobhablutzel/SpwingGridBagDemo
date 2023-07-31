@@ -3,9 +3,17 @@ package com.hablutzel.spwingGBDemo;
 
 import com.hablutzel.spwing.Spwing;
 import com.hablutzel.spwing.annotations.Controller;
+import com.hablutzel.spwing.command.PropertyChangeCommand;
+import com.hablutzel.spwing.model.ControllerFor;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
+import javax.swing.undo.UndoManager;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -21,9 +29,15 @@ import java.util.Locale;
  * For this demo, the button reacts by changing
  * the text of the model.
  */
-@Controller
+@Service
+@Scope("document")
 @RequiredArgsConstructor
-public class SpwingGridBagDemoController {
+public class SpwingGridBagDemoController implements ControllerFor<SpwingGridBagDemoModel>,
+        ApplicationContextAware {
+
+
+    @Setter
+    private ApplicationContext applicationContext;
 
     /**
      * In this demo, the model is needed by multiple method.
@@ -93,7 +107,8 @@ public class SpwingGridBagDemoController {
      * package of the {@link SpwingGridBagDemo} class.
      */
     @SuppressWarnings("unused")
-    public void onChange_Clicked(final MessageSource messageSource) {
+    public void onChange_Clicked(final MessageSource messageSource,
+                                 final UndoManager undoManager) {
 
         // Get the current time
         final String currentTimeString = ZonedDateTime
@@ -107,8 +122,13 @@ public class SpwingGridBagDemoController {
                 "Don't forget to define a local definition of 'timeIs'",
                 Locale.getDefault());
 
-        // Change the model value.
-        model.setTextField(newValue);
+        // Get the name of the command from the application properties through
+        // the application context
+        String cmdName = applicationContext.getMessage("changeName", null, Locale.getDefault());
+
+        // Add the new edit to the undo stack
+        final PropertyChangeCommand<String> propertyChangeCommand = new PropertyChangeCommand<>(newValue, model::getTextField, model::setTextField, cmdName);
+        undoManager.addEdit(propertyChangeCommand);
     }
 
 }
